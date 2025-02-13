@@ -1,0 +1,155 @@
+def sieve(limit):
+
+    if limit < 2:
+
+        return []
+
+    if limit == 2:
+
+        return [False, True]
+
+    if limit == 3:
+
+        return [False, True, True]
+
+
+    res = [False]
+
+    for j in range(0,limit):
+
+        res.append(False)
+
+    if limit >= 2:
+
+        res[2] = True
+
+    if limit >= 3:
+
+        res[3] = True
+
+
+
+    for i in range(4, limit + 1):
+
+        res[i] = False
+
+
+
+    i = 1
+
+    while i <= limit:
+
+        j = 1
+
+        while j <= limit:
+
+
+
+            n = (4 * i * i) + (j * j)
+
+            if (n <= limit and (n % 12 == 1 or
+
+                                n % 12 == 5)):
+
+                res[n] ^= True
+
+
+
+            n = (3 * i * i) + (j * j)
+
+            if n <= limit and n % 12 == 7:
+
+                res[n] ^= True
+
+
+
+            n = (3 * i * i) - (j * j)
+
+            if (i > j and n <= limit and
+
+                    n % 12 == 11):
+
+                res[n] ^= True
+
+            j += 1
+
+        i += 1
+
+
+
+    r = 5
+
+    while r * r <= limit:
+
+        if res[r]:
+
+            for i in range(r * r, limit + 1, r * r):
+
+                res[i] = False
+
+
+
+        r += 1
+
+    return res
+
+
+
+def pick_prime(primes, lowest_prime, prime_limit):
+
+    """returns a suitable prime to use as modulus"""
+
+    for i in range(1, prime_limit):
+
+            if i >= 1000:
+
+                return primes[i]
+
+    # if no prime large enough exists, use last one on list
+
+    return primes[-1]
+
+
+
+def hash(string, modulus):
+
+    """implements polynomial rolling of string keys"""
+
+    hash_value = 5381
+
+    for char in string:
+
+        # hash = 33 XOR ord(c)
+
+        hash_value = ((hash_value << 5) + hash_value) ^ ord(char)
+
+    return hash_value % modulus
+
+
+
+if __name__ == '__main__':
+
+    prime_limit = 1050 # modify limit based on your needs
+
+    lowest_prime = 1000 # modify lower limit based on your needs
+
+    # generate primes list to use as modulus
+
+
+    primes = sieve(prime_limit) 
+
+
+
+    modulus = pick_prime(primes, lowest_prime, prime_limit)
+
+
+
+    test_array = ["alpha","beta","gamma","delta","epsilon"]
+
+
+
+    for string in test_array:
+
+        hash_value = hash(string, modulus)
+
+        print(f"Hash of {string} is {hash_value}")
